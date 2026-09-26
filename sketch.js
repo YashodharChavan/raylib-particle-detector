@@ -1,5 +1,5 @@
 const r = require("raylib")
-
+const g = require("./geometry")
 /* 
     --- Scanner Details ---
     scannerA = first horizontal scanner
@@ -49,39 +49,15 @@ function isRunning() {
     return !r.WindowShouldClose();
 }
 
-// it detects overlap in both ways, slider inside particle, and particle inside slider. It is useful in case of slider width is higher than particle width. 
-function checkPointInRange(rangeStart, rangeEnd, start, end) {
-    return (end >= rangeStart && end <= rangeEnd)
-        || (start >= rangeStart && start <= rangeEnd)
-        || (rangeStart >= end && rangeEnd <= end)
-        || (rangeStart >= start && rangeEnd <= end);
-}
-
 function checkRangeOverlap(scannerX, scannerWidth) {
-    // top-right coordinate of the scanner, particleA and particleB
     const scannerRightX = scannerX + scannerWidth;
     const particleARightX = particleAX + particleAWidth;
     const particleBRightX = particleBX + particleBWidth;
 
-    const isPointInParticleARange = checkPointInRange(particleAX, particleARightX, scannerX, scannerRightX);
-    const isPointInParticleBRange = checkPointInRange(particleBX, particleBRightX, scannerX, scannerRightX);
+    const isPointInParticleARange = g.checkPointInRange(particleAX, particleARightX, scannerX, scannerRightX);
+    const isPointInParticleBRange = g.checkPointInRange(particleBX, particleBRightX, scannerX, scannerRightX);
 
     return (isPointInParticleARange || isPointInParticleBRange);
-}
-
-function handleScannerADirectionChange(scannerASpeed) {
-    const scannerRightX = scannerAX + scannerAWidth;
-    return (scannerRightX >= windowWidth / 2 || scannerAX < 0) ? -scannerASpeed : scannerASpeed;
-}
-
-function handleScannerBDirectionChange(scannerBSpeed) {
-    const scannerRightX = scannerBX + scannerBWidth;
-    return (scannerRightX >= windowWidth || scannerBX < windowWidth / 2) ? -scannerBSpeed : scannerBSpeed;
-}
-
-function handleScannerCDirectionChange(scannerCSpeed) {
-    const scannerBottomY = scannerCY + scannerCHeight;
-    return (scannerBottomY >= windowHeight || scannerCY < 0) ? -scannerCSpeed : scannerCSpeed;
 }
 
 function getDynamicColor(scannerCordinate, scannerDimension) {
@@ -89,13 +65,13 @@ function getDynamicColor(scannerCordinate, scannerDimension) {
 }
 
 function update() {
-    scannerASpeed = handleScannerADirectionChange(scannerASpeed);
+    scannerASpeed = g.handleScannerDirectionChange(scannerAX, scannerAWidth, windowWidth / 2, 0, scannerASpeed);
     scannerAX += scannerASpeed;
 
-    scannerBSpeed = handleScannerBDirectionChange(scannerBSpeed);
+    scannerBSpeed = g.handleScannerDirectionChange(scannerBX, scannerBWidth, windowWidth, windowWidth / 2, scannerBSpeed);
     scannerBX += scannerBSpeed;
 
-    scannerCSpeed = handleScannerCDirectionChange(scannerCSpeed);
+    scannerCSpeed = g.handleScannerDirectionChange(scannerCY, scannerCHeight, windowHeight, 0, scannerCSpeed);
     scannerCY += scannerCSpeed;
 }
 
