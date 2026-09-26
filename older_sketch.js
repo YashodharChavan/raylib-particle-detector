@@ -1,31 +1,19 @@
 const r = require("raylib")
 
-/* 
-    --- Scanner Details ---
-    scannerA = first horizontal scanner
-    scannerB = second horizontal scanner
-    scannerC = third vertical scanner
-
-    --- particle details ---
-    particleA = first horizontal particle range
-    particleB = second horizontal particle range
-    particleC = third horizontal particle range
-*/
-
+const windowTitle = "SCANNER";
 const windowWidth = 700;
 const windowHeight = 400;
+const FPS = 60;
 
 let scannerAX = 0;
 let scannerASpeed = 3;
+let scannerAColor = r.WHITE;
 const scannerAWidth = 40;
 
 let scannerBX = windowWidth / 2;
 let scannerBSpeed = 8;
+let scannerBColor = r.WHITE;
 const scannerBWidth = 30;
-
-let scannerCY = 0;
-let scannerCSpeed = 4;
-const scannerCHeight = 30;
 
 const particleAX = 40;
 const particleAWidth = 30;
@@ -33,14 +21,7 @@ const particleAWidth = 30;
 const particleBX = 500;
 const particleBWidth = 40;
 
-const particleCY = 30;
-const particleCHeight = 40;
-
-
 function setup() {
-    const windowTitle = "SCANNER";
-    const FPS = 60;
-
     r.InitWindow(windowWidth, windowHeight, windowTitle);
     r.SetTargetFPS(FPS);
 }
@@ -49,7 +30,7 @@ function isRunning() {
     return !r.WindowShouldClose();
 }
 
-// it detects overlap in both ways, slider inside particle, and particle inside slider. It is useful in case of slider width is higher than particle width. 
+// it detects overlap in both ways, first one slider inside particle, and particle inside slider. In many cases, slider width can be more than particle width, so it is used to handle that case. 
 function checkPointInRange(rangeStart, rangeEnd, start, end) {
     return (end >= rangeStart && end <= rangeEnd)
         || (start >= rangeStart && start <= rangeEnd)
@@ -69,23 +50,14 @@ function checkRangeOverlap(scannerX, scannerWidth) {
     return (isPointInParticleARange || isPointInParticleBRange);
 }
 
-function handleScannerADirectionChange(scannerASpeed) {
+function handleScannerADirectionChange(scannerAOffsetX) {
     const scannerRightX = scannerAX + scannerAWidth;
-    return (scannerRightX >= windowWidth / 2 || scannerAX < 0) ? -scannerASpeed : scannerASpeed;
+    return (scannerRightX >= windowWidth / 2 || scannerAX < 0) ? -scannerAOffsetX : scannerAOffsetX;
 }
 
-function handleScannerBDirectionChange(scannerBSpeed) {
+function handleScannerBDirectionChange(scannerBOffsetX) {
     const scannerRightX = scannerBX + scannerBWidth;
-    return (scannerRightX >= windowWidth || scannerBX < windowWidth / 2) ? -scannerBSpeed : scannerBSpeed;
-}
-
-function handleScannerCDirectionChange(scannerCSpeed) {
-    const scannerBottomY = scannerCY + scannerCHeight;
-    return (scannerBottomY >= windowHeight || scannerCY < 0) ? -scannerCSpeed : scannerCSpeed;
-}
-
-function getDynamicColor(scannerCordinate, scannerDimension) {
-    return (checkRangeOverlap(scannerCordinate, scannerDimension)) ? r.RED : r.WHITE
+    return (scannerRightX >= windowWidth || scannerBX < windowWidth / 2) ? -scannerBOffsetX : scannerBOffsetX;
 }
 
 function update() {
@@ -95,28 +67,22 @@ function update() {
     scannerBSpeed = handleScannerBDirectionChange(scannerBSpeed);
     scannerBX += scannerBSpeed;
 
-    scannerCSpeed = handleScannerCDirectionChange(scannerCSpeed);
-    scannerCY += scannerCSpeed;
+    scannerAColor = checkRangeOverlap(scannerAX, scannerAWidth) ? r.RED : r.WHITE;
+    scannerBColor = checkRangeOverlap(scannerBX, scannerBWidth) ? r.RED : r.WHITE;
 }
 
 function drawParticleRanges() {
     const commonParticleY = 0;
     const commonParticleHeight = windowHeight;
-    const particleCX = 0;
 
     r.DrawRectangle(particleAX, commonParticleY, particleAWidth, commonParticleHeight, r.SKYBLUE);
+
     r.DrawRectangle(particleBX, commonParticleY, particleBWidth, commonParticleHeight, r.SKYBLUE);
-    r.DrawRectangle(particleCX, particleCY, windowWidth, particleCHeight, r.SKYBLUE);
 }
 
 function draw() {
     const commonScannerY = 0;
     const commonScannerHeight = windowHeight;
-    const scannerCX = 0;
-
-    const scannerAColor = getDynamicColor(scannerAX, scannerAWidth);
-    const scannerBColor = getDynamicColor(scannerBX, scannerBWidth);
-    const scannerCColor = getDynamicColor(scannerCY, scannerCHeight);
 
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
@@ -124,8 +90,8 @@ function draw() {
     drawParticleRanges();
 
     r.DrawRectangle(scannerAX, commonScannerY, scannerAWidth, commonScannerHeight, scannerAColor);
+
     r.DrawRectangle(scannerBX, commonScannerY, scannerBWidth, commonScannerHeight, scannerBColor);
-    r.DrawRectangle(scannerCX, scannerCY, windowWidth, scannerCHeight, scannerCColor);
 
     r.EndDrawing();
 }
