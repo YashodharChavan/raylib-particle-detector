@@ -10,8 +10,19 @@ function handleScannerDirectionChange(scannerCoordinate, scannerDimension, maxRa
     return (scannerRightX >= maxRangeWidth || scannerCoordinate < minRangeWidth) ? -scannerSpeed : scannerSpeed;
 }
 
+function checkRangeOverlap(scannerX, scannerWidth, particleX, particleWidth) {
+    const scannerRightX = scannerX + scannerWidth;
+    const particleRightX = particleX + particleWidth;
+
+    const isPointInParticleRange = checkPointInRange(particleX, particleRightX, scannerX, scannerRightX);
+
+    return (isPointInParticleRange);
+}
+
+
 
 module.exports = {
     checkPointInRange,
     handleScannerDirectionChange,
+    checkRangeOverlap,
 }
