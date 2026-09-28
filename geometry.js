@@ -1,31 +1,25 @@
 // Usind DeMorgans theorem, simplified format is: 
 function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-    return !(rangeStart > pointEnd || rangeEnd < pointStart) 
+    return !(rangeStart > pointEnd || rangeEnd < pointStart)
         || !(pointEnd > rangeStart || pointStart < rangeEnd)
 }
 
-// function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-//     return (pointEnd >= rangeStart && pointEnd <= rangeEnd)
-//         || (pointStart >= rangeStart && pointStart <= rangeEnd)
-//         || (rangeStart >= pointEnd && rangeEnd <= pointEnd)
-//         || (rangeStart >= pointStart && rangeEnd <= pointEnd);
-// }
-
-function handleScannerDirectionChange(detectorCordinate, detectorDimension, maxRangeWidth, minRangeWidth, scannerSpeed) {
+function getDetectorVelocity(detectorCordinate, detectorDimension, maxRangeWidth, minRangeWidth, detectorVelocity) {
     const detectorEnd = detectorCordinate + detectorDimension;
-    return (detectorEnd >= maxRangeWidth || detectorCordinate < minRangeWidth) ? -scannerSpeed : scannerSpeed;
+    const isDetectorBeyondEnd = detectorEnd >= maxRangeWidth;
+    const isDetectorBeforeStart = detectorCordinate < minRangeWidth
+    return (isDetectorBeyondEnd || isDetectorBeforeStart) ? -detectorVelocity : detectorVelocity;
 }
 
-function checkRangeOverlap(detectorDimension, detectorSize, particleDimension, particleSize) {
-    const detectorEnd = detectorDimension + detectorSize;
-    const particleEnd = particleDimension + particleSize;
-
-    const isPointInParticleRange = checkPointInRange(particleDimension, particleEnd, detectorDimension, detectorEnd);
+function checkRangeOverlap(detectorCoordinate, detectorSize, particleCoordinate, particleSize) {
+    const detectorEnd = detectorCoordinate + detectorSize;
+    const particleEnd = particleCoordinate + particleSize;
+    const isPointInParticleRange = checkPointInRange(particleCoordinate, particleEnd, detectorCoordinate, detectorEnd);
     return isPointInParticleRange;
 }
 
 module.exports = {
     checkPointInRange,
-    handleScannerDirectionChange,
+    getDetectorVelocity: getDetectorVelocity,
     checkRangeOverlap,
 }

@@ -28,37 +28,54 @@ const particleCY = 30;
 const particleCHeight = 40;
 
 function setup() {
-    const windowTitle = "SCANNER";
+    const windowTitle = "DETECTOR PARTICLE";
     const FPS = 60;
 
     r.InitWindow(windowWidth, windowHeight, windowTitle);
     r.SetTargetFPS(FPS);
 
-    d2.detectorX = windowWidth / 2;
+    setDetectorRanges(windowWidth, windowHeight);
+}
+
+function setDetectorRanges(width, height) {
+    d1.minRange = 0;
+    d1.maxRange = width / 2;
+
+    d2.detectorX = width / 2;
+    d2.minRange = width / 2;
+    d2.maxRange = width;
+
+    d3.minRange = 0;
+    d3.maxRange = height;
 }
 
 function isRunning() {
     return !r.WindowShouldClose();
 }
 
-function calculateColor(reference, detectorCordinate, scannerDimension, particleX, particleWidth) {
-    reference.isRangeOverlap = g.checkRangeOverlap(detectorCordinate, scannerDimension, particleX, particleWidth)
-    reference.color = (reference.isRangeOverlap) ? r.RED : r.WHITE
+function setDetectorColor(ref, detectorCordinate, detectorDimension, particleX, particleWidth) {
+    ref.isRangeOverlap = g.checkRangeOverlap(detectorCordinate, detectorDimension, particleX, particleWidth)
+    ref.color = (ref.isRangeOverlap) ? r.RED : r.WHITE
+}
+
+function updateHorizontalDetectorVelocity(ref) {
+    ref.detectorVelocity = g.getDetectorVelocity(ref.detectorX, ref.detectorWidth, ref.maxRange, ref.minRange, ref.detectorVelocity);
+    ref.detectorX += ref.detectorVelocity;
+}
+
+function updateVerticalDetectorVelocity(ref) {
+    ref.detectorVelocity = g.getDetectorVelocity(ref.detectorY, ref.detectorHeight, ref.maxRange, ref.minRange, ref.detectorVelocity);
+    ref.detectorY += ref.detectorVelocity;
 }
 
 function update() {
-    d1.detectorVelocity = g.handleScannerDirectionChange(d1.detectorX, d1.detectorWidth, windowWidth / 2, 0, d1.detectorVelocity);
-    d1.detectorX += d1.detectorVelocity;
+    updateHorizontalDetectorVelocity(d1);
+    updateHorizontalDetectorVelocity(d2);
+    updateVerticalDetectorVelocity(d3);
 
-    d2.detectorVelocity = g.handleScannerDirectionChange(d2.detectorX, d2.detectorWidth, windowWidth, windowWidth / 2, d2.detectorVelocity);
-    d2.detectorX += d2.detectorVelocity;
-
-    d3.detectorVelocity = g.handleScannerDirectionChange(d3.detectorY, d3.detectorHeight, windowHeight, 0, d3.detectorVelocity);
-    d3.detectorY += d3.detectorVelocity;
-
-    calculateColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
-    calculateColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
-    calculateColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
+    setDetectorColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
+    setDetectorColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
+    setDetectorColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
 }
 
 function drawHorizontalParticleRange(particleX, particleWidth) {
@@ -69,12 +86,12 @@ function drawVerticalParticleRange(particleY, particleHeight) {
     r.DrawRectangle(0, particleY, windowWidth, particleHeight, r.SKYBLUE);
 }
 
-function drawHorizontalDetector(scannerX, scannerWidth, color) {
-    r.DrawRectangle(scannerX, 0, scannerWidth, windowHeight, color);
+function drawHorizontalDetector(detectorX, detectorWidth, color) {
+    r.DrawRectangle(detectorX, 0, detectorWidth, windowHeight, color);
 }
 
-function drawVerticalDetector(scannerY, scannerHeight, color) {
-    r.DrawRectangle(0, scannerY, windowWidth, scannerHeight, color);
+function drawVerticalDetector(detectorY, detectorHeight, color) {
+    r.DrawRectangle(0, detectorY, windowWidth, detectorHeight, color);
 }
 
 function draw() {
