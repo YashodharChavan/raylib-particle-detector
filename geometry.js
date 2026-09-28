@@ -1,13 +1,13 @@
-// function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-//     return !(pointStart > rangeStart || pointEnd < rangeEnd)
-// }
-
 function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-    return (pointEnd >= rangeStart && pointEnd <= rangeEnd)
-        || (pointStart >= rangeStart && pointStart <= rangeEnd)
-        || (rangeStart >= pointEnd && rangeEnd <= pointEnd)
-        || (rangeStart >= pointStart && rangeEnd <= pointEnd);
+    return !(rangeStart > pointEnd || rangeEnd < pointStart)
 }
+
+// function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
+//     return (pointEnd >= rangeStart && pointEnd <= rangeEnd)
+//         || (pointStart >= rangeStart && pointStart <= rangeEnd)
+//         || (rangeStart >= pointEnd && rangeEnd <= pointEnd)
+//         || (rangeStart >= pointStart && rangeEnd <= pointEnd);
+// }
 
 function handleScannerDirectionChange(scannerCoordinate, scannerDimension, maxRangeWidth, minRangeWidth, scannerSpeed) {
     const scannerRightX = scannerCoordinate + scannerDimension;

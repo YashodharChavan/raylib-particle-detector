@@ -4,15 +4,15 @@ const d1 = require("./d1.js")
 const d2 = require("./d2.js")
 const d3 = require("./d3.js")
 /* 
-    --- Scanner Details ---
-    detectorA = first horizontal scanner
-    detectorB = second horizontal scanner
-    detectorC = third vertical scanner
+    --- Detector Details ---
+    d1.detector = first horizontal scanner
+    d2.detector = second horizontal scanner
+    d3.detector = third vertical scanner
 
     --- particle details ---
-    particleA = first horizontal particle range
-    particleB = second horizontal particle range
-    particleC = third horizontal particle range
+    d1.particle = first horizontal particle range
+    d2.particle = second horizontal particle range
+    d3.particle = third horizontal particle range
 */
 
 const windowWidth = 700;
