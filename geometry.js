@@ -1,8 +1,12 @@
-function checkPointInRange(rangeStart, rangeEnd, start, end) {
-    return (end >= rangeStart && end <= rangeEnd)
-        || (start >= rangeStart && start <= rangeEnd)
-        || (rangeStart >= end && rangeEnd <= end)
-        || (rangeStart >= start && rangeEnd <= end);
+// function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
+//     return !(pointStart > rangeStart || pointEnd < rangeEnd)
+// }
+
+function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
+    return (pointEnd >= rangeStart && pointEnd <= rangeEnd)
+        || (pointStart >= rangeStart && pointStart <= rangeEnd)
+        || (rangeStart >= pointEnd && rangeEnd <= pointEnd)
+        || (rangeStart >= pointStart && rangeEnd <= pointEnd);
 }
 
 function handleScannerDirectionChange(scannerCoordinate, scannerDimension, maxRangeWidth, minRangeWidth, scannerSpeed) {
@@ -18,8 +22,6 @@ function checkRangeOverlap(scannerX, scannerWidth, particleX, particleWidth) {
 
     return (isPointInParticleRange);
 }
-
-
 
 module.exports = {
     checkPointInRange,

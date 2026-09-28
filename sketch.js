@@ -1,10 +1,13 @@
 const r = require("raylib")
 const g = require("./geometry")
+const d1 = require("./d1.js")
+const d2 = require("./d2.js")
+const d3 = require("./d3.js")
 /* 
     --- Scanner Details ---
-    scannerA = first horizontal scanner
-    scannerB = second horizontal scanner
-    scannerC = third vertical scanner
+    detectorA = first horizontal scanner
+    detectorB = second horizontal scanner
+    detectorC = third vertical scanner
 
     --- particle details ---
     particleA = first horizontal particle range
@@ -15,66 +18,53 @@ const g = require("./geometry")
 const windowWidth = 700;
 const windowHeight = 400;
 
-let scannerAX = 0;
-let scannerASpeed = 3;
-const scannerAWidth = 40;
-
-let scannerBX = windowWidth / 2;
-let scannerBSpeed = 8;
-const scannerBWidth = 30;
-
-let scannerCY = 0;
-let scannerCSpeed = 4;
-const scannerCHeight = 30;
-
-
 function setup() {
     const windowTitle = "SCANNER";
     const FPS = 60;
 
     r.InitWindow(windowWidth, windowHeight, windowTitle);
     r.SetTargetFPS(FPS);
+
+    d2.detectorX = windowWidth / 2;
 }
 
 function isRunning() {
     return !r.WindowShouldClose();
 }
 
-function getDynamicColor(scannerCordinate, scannerDimension, particleX, particleWidth) {
-    const isRangeOverlap = g.checkRangeOverlap(scannerCordinate, scannerDimension, particleX, particleWidth)
+function getDynamicColor(detectorCordinate, scannerDimension, particleX, particleWidth) {
+    const isRangeOverlap = g.checkRangeOverlap(detectorCordinate, scannerDimension, particleX, particleWidth)
     return (isRangeOverlap) ? r.RED : r.WHITE
 }
 
 function update() {
-    scannerASpeed = g.handleScannerDirectionChange(scannerAX, scannerAWidth, windowWidth / 2, 0, scannerASpeed);
-    scannerAX += scannerASpeed;
+    d1.detectorVelocity = g.handleScannerDirectionChange(d1.detectorX, d1.detectorWidth, windowWidth / 2, 0, d1.detectorVelocity);
+    d1.detectorX += d1.detectorVelocity;
 
-    scannerBSpeed = g.handleScannerDirectionChange(scannerBX, scannerBWidth, windowWidth, windowWidth / 2, scannerBSpeed);
-    scannerBX += scannerBSpeed;
+    d2.detectorVelocity = g.handleScannerDirectionChange(d2.detectorX, d2.detectorWidth, windowWidth, windowWidth / 2, d2.detectorVelocity);
+    d2.detectorX += d2.detectorVelocity;
 
-    scannerCSpeed = g.handleScannerDirectionChange(scannerCY, scannerCHeight, windowHeight, 0, scannerCSpeed);
-    scannerCY += scannerCSpeed;
+    d3.detectorVelocity = g.handleScannerDirectionChange(d3.detectorY, d3.detectorHeight, windowHeight, 0, d3.detectorVelocity);
+    d3.detectorY += d3.detectorVelocity;
 }
 
 function drawHorizontalParticleRange(particleX, particleWidth) {
-    const particleY = 0;
-    const particleHeight = windowHeight;
-    
-    r.DrawRectangle(particleX, particleY, particleWidth, particleHeight, r.SKYBLUE);
+    r.DrawRectangle(particleX, 0, particleWidth, windowHeight, r.SKYBLUE);
 }
 
 function drawVerticalParticleRange(particleY, particleHeight) {
-    const particleX = 0;
-    const particleWidth = windowWidth
-    
-    r.DrawRectangle(particleX, particleY, particleWidth, particleHeight, r.SKYBLUE);
+    r.DrawRectangle(0, particleY, windowWidth, particleHeight, r.SKYBLUE);
+}
+
+function drawHorizontalDetector(scannerX, scannerWidth, color) {
+    r.DrawRectangle(scannerX, 0, scannerWidth, windowHeight, color);
+}
+
+function drawVerticalDetector(scannerY, scannerHeight, color) {
+    r.DrawRectangle(0, scannerY, windowWidth, scannerHeight, color);
 }
 
 function draw() {
-    const commonScannerY = 0;
-    const commonScannerHeight = windowHeight;
-    const scannerCX = 0;
-
     const particleAX = 40;
     const particleAWidth = 30;
 
@@ -84,9 +74,9 @@ function draw() {
     const particleCY = 30;
     const particleCHeight = 40;
 
-    const scannerAColor = getDynamicColor(scannerAX, scannerAWidth, particleAX, particleAWidth);
-    const scannerBColor = getDynamicColor(scannerBX, scannerBWidth, particleBX, particleBWidth);
-    const scannerCColor = getDynamicColor(scannerCY, scannerCHeight, particleCY, particleCHeight);
+    const detectorAColor = getDynamicColor(d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
+    const detectorBColor = getDynamicColor(d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
+    const detectorCColor = getDynamicColor(d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
 
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
@@ -95,9 +85,9 @@ function draw() {
     drawHorizontalParticleRange(particleBX, particleBWidth);
     drawVerticalParticleRange(particleCY, particleCHeight);
 
-    r.DrawRectangle(scannerAX, commonScannerY, scannerAWidth, commonScannerHeight, scannerAColor);
-    r.DrawRectangle(scannerBX, commonScannerY, scannerBWidth, commonScannerHeight, scannerBColor);
-    r.DrawRectangle(scannerCX, scannerCY, windowWidth, scannerCHeight, scannerCColor);
+    drawHorizontalDetector(d1.detectorX, d1.detectorWidth, detectorAColor);
+    drawHorizontalDetector(d2.detectorX, d2.detectorWidth, detectorBColor);
+    drawVerticalDetector(d3.detectorY, d3.detectorHeight, detectorCColor);
 
     r.EndDrawing();
 }
