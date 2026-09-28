@@ -86,12 +86,12 @@ function drawVerticalParticleRange(particleY, particleHeight) {
     r.DrawRectangle(0, particleY, windowWidth, particleHeight, r.SKYBLUE);
 }
 
-function drawHorizontalDetector(detectorX, detectorWidth, color) {
-    r.DrawRectangle(detectorX, 0, detectorWidth, windowHeight, color);
+function drawHorizontalDetector(ref) {
+    r.DrawRectangle(ref.detectorX, 0,  ref.detectorWidth, windowHeight, ref.color);
 }
 
-function drawVerticalDetector(detectorY, detectorHeight, color) {
-    r.DrawRectangle(0, detectorY, windowWidth, detectorHeight, color);
+function drawVerticalDetector(ref) {
+    r.DrawRectangle(0, ref.detectorY, windowWidth, ref.detectorHeight, ref.color);
 }
 
 function draw() {
@@ -100,11 +100,11 @@ function draw() {
 
     drawHorizontalParticleRange(particleAX, particleAWidth);
     drawHorizontalParticleRange(particleBX, particleBWidth);
-    drawVerticalParticleRange(particleCY, particleCHeight);
+    drawVerticalParticleRange(particleCY, particleCHeight); 
 
-    drawHorizontalDetector(d1.detectorX, d1.detectorWidth, d1.color);
-    drawHorizontalDetector(d2.detectorX, d2.detectorWidth, d2.color);
-    drawVerticalDetector(d3.detectorY, d3.detectorHeight, d3.color);
+    drawHorizontalDetector(d1);
+    drawHorizontalDetector(d2);
+    drawVerticalDetector(d3);
 
     r.EndDrawing();
 }
