@@ -32,9 +32,9 @@ function isRunning() {
     return !r.WindowShouldClose();
 }
 
-function getDynamicColor(detectorCordinate, scannerDimension, particleX, particleWidth) {
-    const isRangeOverlap = g.checkRangeOverlap(detectorCordinate, scannerDimension, particleX, particleWidth)
-    return (isRangeOverlap) ? r.RED : r.WHITE
+function calculateColor(reference, detectorCordinate, scannerDimension, particleX, particleWidth) {
+    reference.isRangeOverlap = g.checkRangeOverlap(detectorCordinate, scannerDimension, particleX, particleWidth)
+    reference.color = (reference.isRangeOverlap) ? r.RED : r.WHITE 
 }
 
 function update() {
@@ -74,9 +74,9 @@ function draw() {
     const particleCY = 30;
     const particleCHeight = 40;
 
-    const detectorAColor = getDynamicColor(d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
-    const detectorBColor = getDynamicColor(d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
-    const detectorCColor = getDynamicColor(d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
+    calculateColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
+    calculateColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
+    calculateColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
 
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
@@ -85,9 +85,9 @@ function draw() {
     drawHorizontalParticleRange(particleBX, particleBWidth);
     drawVerticalParticleRange(particleCY, particleCHeight);
 
-    drawHorizontalDetector(d1.detectorX, d1.detectorWidth, detectorAColor);
-    drawHorizontalDetector(d2.detectorX, d2.detectorWidth, detectorBColor);
-    drawVerticalDetector(d3.detectorY, d3.detectorHeight, detectorCColor);
+    drawHorizontalDetector(d1.detectorX, d1.detectorWidth, d1.color);
+    drawHorizontalDetector(d2.detectorX, d2.detectorWidth, d2.color);
+    drawVerticalDetector(d3.detectorY, d3.detectorHeight, d3.color);
 
     r.EndDrawing();
 }
