@@ -1,5 +1,6 @@
+// Usind DeMorgans theorem, simplified format is: 
 function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-    return !(rangeStart > pointEnd || rangeEnd < pointStart)
+    return !(rangeStart > pointEnd || rangeEnd < pointStart) || !(pointEnd > rangeStart || pointStart < rangeEnd) 
 }
 
 // function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
