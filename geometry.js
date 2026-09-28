@@ -1,6 +1,7 @@
 // Usind DeMorgans theorem, simplified format is: 
 function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
-    return !(rangeStart > pointEnd || rangeEnd < pointStart) || !(pointEnd > rangeStart || pointStart < rangeEnd) 
+    return !(rangeStart > pointEnd || rangeEnd < pointStart) 
+        || !(pointEnd > rangeStart || pointStart < rangeEnd)
 }
 
 // function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
@@ -10,18 +11,17 @@ function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
 //         || (rangeStart >= pointStart && rangeEnd <= pointEnd);
 // }
 
-function handleScannerDirectionChange(scannerCoordinate, scannerDimension, maxRangeWidth, minRangeWidth, scannerSpeed) {
-    const scannerRightX = scannerCoordinate + scannerDimension;
-    return (scannerRightX >= maxRangeWidth || scannerCoordinate < minRangeWidth) ? -scannerSpeed : scannerSpeed;
+function handleScannerDirectionChange(detectorCordinate, detectorDimension, maxRangeWidth, minRangeWidth, scannerSpeed) {
+    const detectorEnd = detectorCordinate + detectorDimension;
+    return (detectorEnd >= maxRangeWidth || detectorCordinate < minRangeWidth) ? -scannerSpeed : scannerSpeed;
 }
 
-function checkRangeOverlap(scannerX, scannerWidth, particleX, particleWidth) {
-    const scannerRightX = scannerX + scannerWidth;
-    const particleRightX = particleX + particleWidth;
+function checkRangeOverlap(detectorDimension, detectorSize, particleDimension, particleSize) {
+    const detectorEnd = detectorDimension + detectorSize;
+    const particleEnd = particleDimension + particleSize;
 
-    const isPointInParticleRange = checkPointInRange(particleX, particleRightX, scannerX, scannerRightX);
-
-    return (isPointInParticleRange);
+    const isPointInParticleRange = checkPointInRange(particleDimension, particleEnd, detectorDimension, detectorEnd);
+    return isPointInParticleRange;
 }
 
 module.exports = {

@@ -10,8 +10,8 @@ const d3 = require("./d3.js")
     d3.detector = third vertical scanner
 
     --- particle details ---
-    d1.particle = first horizontal particle range
-    d2.particle = second horizontal particle range
+    d1.particle = first vertical particle range
+    d2.particle = second vertical particle range
     d3.particle = third horizontal particle range
 */
 
