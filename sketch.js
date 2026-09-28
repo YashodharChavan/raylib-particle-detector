@@ -18,6 +18,15 @@ const d3 = require("./d3.js")
 const windowWidth = 700;
 const windowHeight = 400;
 
+const particleAX = 40;
+const particleAWidth = 30;
+
+const particleBX = 500;
+const particleBWidth = 40;
+
+const particleCY = 30;
+const particleCHeight = 40;
+
 function setup() {
     const windowTitle = "SCANNER";
     const FPS = 60;
@@ -34,7 +43,7 @@ function isRunning() {
 
 function calculateColor(reference, detectorCordinate, scannerDimension, particleX, particleWidth) {
     reference.isRangeOverlap = g.checkRangeOverlap(detectorCordinate, scannerDimension, particleX, particleWidth)
-    reference.color = (reference.isRangeOverlap) ? r.RED : r.WHITE 
+    reference.color = (reference.isRangeOverlap) ? r.RED : r.WHITE
 }
 
 function update() {
@@ -46,6 +55,10 @@ function update() {
 
     d3.detectorVelocity = g.handleScannerDirectionChange(d3.detectorY, d3.detectorHeight, windowHeight, 0, d3.detectorVelocity);
     d3.detectorY += d3.detectorVelocity;
+
+    calculateColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
+    calculateColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
+    calculateColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
 }
 
 function drawHorizontalParticleRange(particleX, particleWidth) {
@@ -65,19 +78,6 @@ function drawVerticalDetector(scannerY, scannerHeight, color) {
 }
 
 function draw() {
-    const particleAX = 40;
-    const particleAWidth = 30;
-
-    const particleBX = 500;
-    const particleBWidth = 40;
-
-    const particleCY = 30;
-    const particleCHeight = 40;
-
-    calculateColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
-    calculateColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
-    calculateColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
-
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
 
