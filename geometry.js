@@ -1,6 +1,11 @@
-function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
+function checkPointInRange(detector, particle) {
+    const rangeStart = detector.coordinate;
+    const rangeEnd = rangeStart + detector.dimension;
+
+    const pointStart = particle.coordinate;
+    const pointEnd = pointStart + particle.dimension
+
     return !(rangeStart > pointEnd || rangeEnd < pointStart)
-        || !(pointEnd > rangeStart || pointStart < rangeEnd)
 }
 
 function getDetectorVelocity(detector) {
@@ -11,11 +16,13 @@ function getDetectorVelocity(detector) {
     return (isDetectorBeyondEnd || isDetectorBeforeStart) ? -detector.velocity : detector.velocity;
 }
 
-function checkRangeOverlap(detectorCoordinate, detectorSize, particleCoordinate, particleSize) {
-    const detectorEnd = detectorCoordinate + detectorSize;
-    const particleEnd = particleCoordinate + particleSize;
-    const isPointInParticleRange = checkPointInRange(particleCoordinate, particleEnd, detectorCoordinate, detectorEnd);
-    return isPointInParticleRange;
+function checkRangeOverlap(detector, p1, p2) {
+    // const detectorEnd = detector.coordinate + detector.dimension;
+    // const particleEnd = particle.coordinate + particle.dimension;
+
+    const p1Status = checkPointInRange(detector, p1);
+    const p2Status = checkPointInRange(detector, p2);
+    return p1Status || p2Status;
 }
 
 module.exports = {
