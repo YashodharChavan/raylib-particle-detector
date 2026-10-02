@@ -1,106 +1,83 @@
 const r = require("raylib")
-const g = require("./geometry")
-const d1 = require("./d1.js")
-const d2 = require("./d2.js")
-const d3 = require("./d3.js")
-/* 
-    --- Detector Details ---
-    d1.detector = first horizontal scanner
-    d2.detector = second horizontal scanner
-    d3.detector = third vertical scanner
+const g = require("./geometry");
+const range = require("./range")
+let d1, d2, d3;
 
-    --- particle details ---
-    d1.particle = first vertical particle range
-    d2.particle = second vertical particle range
-    d3.particle = third horizontal particle range
-*/
-
+let p1, p2, p3;
 const windowWidth = 700;
 const windowHeight = 400;
 
-const particleAX = 40;
-const particleAWidth = 30;
-
-const particleBX = 500;
-const particleBWidth = 40;
-
-const particleCY = 30;
-const particleCHeight = 40;
-
 function setup() {
-    const windowTitle = "DETECTOR PARTICLE";
+    const windowTitle = "DETECTOR PARTICLE"; 
     const FPS = 60;
 
     r.InitWindow(windowWidth, windowHeight, windowTitle);
     r.SetTargetFPS(FPS);
 
-    setDetectorRanges(windowWidth, windowHeight);
+    d1 = createDetector(0, 3, 40, 0, windowWidth / 2);
+    d2 = createDetector(windowWidth / 2, 4, 40, windowWidth / 2, windowWidth);
+    d3 = createDetector(0, 3, 40, 0, windowHeight);
+
+    p1 = createParticleField(40, 30);
+    p2 = createParticleField(500, 40);
+    p3 = createParticleField(30, 40);
+
 }
 
-function setDetectorRanges(width, height) {
-    d1.minRange = 0;
-    d1.maxRange = width / 2;
+function createDetector(coordinate, velocity, dimension, minRange, maxRange) {
+    return {
+        coordinate,
+        velocity,
+        dimension,
+        minRange,
+        maxRange,
+        overlapStatus: false,
+        color: r.WHITE,
+    }
+}
 
-    d2.detectorX = width / 2;
-    d2.minRange = width / 2;
-    d2.maxRange = width;
-
-    d3.minRange = 0;
-    d3.maxRange = height;
+function createParticleField(coordinate, dimension) {
+    return {
+        coordinate, 
+        dimension
+    }
 }
 
 function isRunning() {
     return !r.WindowShouldClose();
 }
 
-function setDetectorColor(ref, detectorCordinate, detectorDimension, particleX, particleWidth) {
-    ref.isRangeOverlap = g.checkRangeOverlap(detectorCordinate, detectorDimension, particleX, particleWidth)
-    ref.color = (ref.isRangeOverlap) ? r.RED : r.WHITE
+function setDetectorColor(detector, particle) {
+    detector.isRangeOverlap = g.checkRangeOverlap(detector.coordinate, detector.dimension, particle.coordinate, particle.dimension)
+    detector.color = (detector.isRangeOverlap) ? r.RED : r.WHITE
+    return detector;
 }
 
-function updateHorizontalDetectorVelocity(ref) {
-    ref.detectorVelocity = g.getDetectorVelocity(ref.detectorX, ref.detectorWidth, ref.maxRange, ref.minRange, ref.detectorVelocity);
-    ref.detectorX += ref.detectorVelocity;
+function updateDetectorVelocity(ref) {
+    ref.velocity = g.getDetectorVelocity(ref);
+    ref.coordinate += ref.velocity;
+    return ref;
 }
 
-function updateVerticalDetectorVelocity(ref) {
-    ref.detectorVelocity = g.getDetectorVelocity(ref.detectorY, ref.detectorHeight, ref.maxRange, ref.minRange, ref.detectorVelocity);
-    ref.detectorY += ref.detectorVelocity;
+function updateDetector(detector, particle) {
+    updateDetectorVelocity(detector);
+    setDetectorColor(detector, particle);
 }
 
 function update() {
-    updateHorizontalDetectorVelocity(d1);
-    updateHorizontalDetectorVelocity(d2);
-    updateVerticalDetectorVelocity(d3);
-
-    setDetectorColor(d1, d1.detectorX, d1.detectorWidth, particleAX, particleAWidth);
-    setDetectorColor(d2, d2.detectorX, d2.detectorWidth, particleBX, particleBWidth);
-    setDetectorColor(d3, d3.detectorY, d3.detectorHeight, particleCY, particleCHeight);
+    updateDetector(d1, p1);
+    updateDetector(d2, p2);
+    updateDetector(d3, p3);
 }
 
-function drawHorizontalParticleRange(particleX, particleWidth) {
-    r.DrawRectangle(particleX, 0, particleWidth, windowHeight, r.SKYBLUE);
-}
-
-function drawVerticalParticleRange(particleY, particleHeight) {
-    r.DrawRectangle(0, particleY, windowWidth, particleHeight, r.SKYBLUE);
-}
-
-function drawHorizontalDetector(ref) {
-    r.DrawRectangle(ref.detectorX, 0,  ref.detectorWidth, windowHeight, ref.color);
-}
-
-function drawVerticalDetector(ref) {
-    r.DrawRectangle(0, ref.detectorY, windowWidth, ref.detectorHeight, ref.color);
-}
 
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
 
-    drawHorizontalParticleRange(particleAX, particleAWidth);
-    drawHorizontalParticleRange(particleBX, particleBWidth);
-    drawVerticalParticleRange(particleCY, particleCHeight); 
+    drawHorizontalParticleRange(p1);
+    drawHorizontalParticleRange(p2);
+    drawVerticalParticleRange(p3);
 
     drawHorizontalDetector(d1);
     drawHorizontalDetector(d2);

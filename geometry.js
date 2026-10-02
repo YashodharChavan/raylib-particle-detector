@@ -1,14 +1,14 @@
-// Usind DeMorgans theorem, simplified format is: 
 function checkPointInRange(rangeStart, rangeEnd, pointStart, pointEnd) {
     return !(rangeStart > pointEnd || rangeEnd < pointStart)
         || !(pointEnd > rangeStart || pointStart < rangeEnd)
 }
 
-function getDetectorVelocity(detectorCordinate, detectorDimension, maxRangeWidth, minRangeWidth, detectorVelocity) {
-    const detectorEnd = detectorCordinate + detectorDimension;
-    const isDetectorBeyondEnd = detectorEnd >= maxRangeWidth;
-    const isDetectorBeforeStart = detectorCordinate < minRangeWidth
-    return (isDetectorBeyondEnd || isDetectorBeforeStart) ? -detectorVelocity : detectorVelocity;
+function getDetectorVelocity(detector) {
+    const detectorEnd = detector.coordinate + detector.dimension;
+    const isDetectorBeyondEnd = detectorEnd >= detector.maxRange;
+    const isDetectorBeforeStart = detector.coordinate < detector.minRange
+
+    return (isDetectorBeyondEnd || isDetectorBeforeStart) ? -detector.velocity : detector.velocity;
 }
 
 function checkRangeOverlap(detectorCoordinate, detectorSize, particleCoordinate, particleSize) {
