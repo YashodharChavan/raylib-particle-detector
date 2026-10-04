@@ -1,9 +1,11 @@
 function checkPointInRange(detector, particle) {
     const rangeStart = detector.isVertical? detector.y : detector.x;
-    const rangeEnd = rangeStart + detector.dimension;
+    const detectorDimension = detector.isVertical ? detector.height : detector.width;
+    const rangeEnd = rangeStart + detectorDimension;
 
+    const particleDimension = particle.isVertical ? particle.height : particle.width;
     const pointStart = particle.isVertical? particle.y : particle.x;
-    const pointEnd = pointStart + particle.dimension
+    const pointEnd = pointStart + particleDimension
 
     return !(rangeStart > pointEnd || rangeEnd < pointStart)
 }

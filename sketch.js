@@ -1,25 +1,15 @@
 const r = require("raylib")
-const u = require("./utils")
+const u = require("./utils");
+const d = require("./data")
 
 function setup() {
-    const windowTitle = "DETECTOR PARTICLE";
     const windowWidth = 700;
     const windowHeight = 400;
-    const FPS = 60;
 
-    r.InitWindow(windowWidth, windowHeight, windowTitle);
-    r.SetTargetFPS(FPS);
-
-    const world = {}
-
-    world.d1 = u.createDetector(3, 40, 0, windowWidth / 2, windowHeight, false);
-    world.d2 = u.createDetector(4, 40, windowWidth / 2, windowWidth, windowHeight, false);
-    world.d3 = u.createDetector(3, 40, 0, windowHeight, windowWidth, true);
-
-    world.p1 = u.createParticleField(40, 30, windowHeight, false);
-    world.p2 = u.createParticleField(200, 40, windowHeight, false);
-    world.p3 = u.createParticleField(30, 40, windowWidth, true);
-
+    r.SetTraceLogLevel(r.LOG_NONE);
+    r.InitWindow(windowWidth, windowHeight, "PARTICLE DETECTOR");
+    r.SetTargetFPS(60);
+    world = d.getData(windowWidth, windowHeight);
     return world;
 }
 
